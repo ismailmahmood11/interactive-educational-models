@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نماذج تطبيقية حسب المواد الدراسية</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap');
+      
+      body {
+        font-family: 'Tajawal', sans-serif;
+        direction: rtl;
+      }
+      
+      .slide-container {
+        max-width: 1280px;
+        min-height: 720px;
+        background: linear-gradient(135deg, #f5f9ff 0%, #e1f5fe 100%);
+        margin: 0 auto;
+        padding: 40px;
+        box-sizing: border-box;
+      }
+      
+      .title {
+        color: #1E88E5;
+        font-weight: bold;
+      }
+      
+      .subtitle {
+        color: #757575;
+      }
+      
+      .model-tab {
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+      }
+      
+      .model-tab:hover {
+        background-color: #E3F2FD;
+        border-color: #1E88E5;
+      }
+      
+      .model-tab.active {
+        background-color: #1E88E5;
+        color: white;
+        border-color: #1565C0;
+      }
+      
+      .model-content {
+        display: none;
+        animation: fadeIn 0.3s ease-in;
+      }
+      
+      .model-content.active {
+        display: block;
+      }
+      
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .model-interface {
+        border: 2px solid #1E88E5;
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        transition: box-shadow 0.3s ease;
+      }
+      
+      .model-interface:hover {
+        box-shadow: 0 4px 12px rgba(30, 136, 229, 0.15);
+      }
+      
+      .input-field {
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      }
+      
+      .input-field:focus {
+        border-color: #1E88E5;
+        box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
+        outline: none;
+      }
+      
+      .btn-primary {
+        background-color: #1E88E5;
+        color: white;
+        transition: all 0.3s ease;
+      }
+      
+      .btn-primary:hover {
+        background-color: #1565C0;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(30, 136, 229, 0.3);
+      }
+      
+      .result-display {
+        background-color: #f0f4f8;
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+      }
+      
+      .result-display.updated {
+        background-color: #e8f5e8;
+        border-color: #4caf50;
+      }
+      
+      .particle {
+        border-radius: 50%;
+        position: absolute;
+        transition: all 0.5s ease;
+      }
+      
+      .grid-square {
+        transition: all 0.3s ease;
+      }
+      
+      .grid-square:hover {
+        transform: scale(1.1);
+      }
+      
+      @media (max-width: 768px) {
+        .slide-container {
+          padding: 20px;
+        }
+        
+        .flex {
+          flex-direction: column;
+        }
+        
+        .w-1\/2 {
+          width: 100%;
+        }
+        
+        .model-tab {
+          font-size: 0.875rem;
+          padding: 8px 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="slide-container">
+      <h1 class="title text-4xl mb-6 text-center">نماذج تطبيقية حسب المواد الدراسية</h1>
+      
+      <div class="flex mb-4 flex-wrap">
+        <div class="model-tab active py-2 px-4 rounded-t-lg text-center flex-1 min-w-0" onclick="showModel('islamic')">
+          <i class="fas fa-book-open ml-2"></i>الدراسات الإسلامية
+        </div>
+        <div class="model-tab py-2 px-4 rounded-t-lg text-center flex-1 min-w-0" onclick="showModel('math')">
+          <i class="fas fa-square-root-alt ml-2"></i>الرياضيات
+        </div>
+        <div class="model-tab py-2 px-4 rounded-t-lg text-center flex-1 min-w-0" onclick="showModel('science')">
+          <i class="fas fa-atom ml-2"></i>العلوم
+        </div>
+        <div class="model-tab py-2 px-4 rounded-t-lg text-center flex-1 min-w-0" onclick="showModel('computer')">
+          <i class="fas fa-laptop-code ml-2"></i>الحاسب الآلي
+        </div>
+      </div>
+      
+      <!-- Islamic Studies Model -->
+      <div class="model-content active" id="islamic">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="subtitle text-2xl mb-4">محرك حساب الزكاة التفاعلي</h2>
+          
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="w-full lg:w-1/2">
+              <p class="text-gray-700 mb-4">يساعد الطلاب على فهم وحساب زكاة الأثمان (الذهب، الفضة، الأوراق النقدية) من خلال:</p>
+              <ul class="text-gray-700 space-y-2 mb-4">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>إدخال نوع المال والمقدار المملوك</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>حساب النصاب والمقدار الواجب دفعه</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>شروحات مبسطة لأحكام الزكاة والأدلة الشرعية</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>أمثلة عملية لحساب الزكاة في سيناريوهات مختلفة</span>
+                </li>
+              </ul>
+              
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-blue-700 font-bold mb-2">مثال تطبيقي:</h3>
+                <p class="text-gray-700">إذا كان لديك 100 جرام من الذهب، فهل تجب عليك الزكاة؟ وكم مقدارها؟</p>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2">
+              <div class="model-interface p-4">
+                <h3 class="text-center text-xl mb-4">محرك حساب الزكاة</h3>
+                <div class="mb-4">
+                  <p class="mb-2">نوع المال:</p>
+                  <div class="flex flex-wrap gap-4">
+                    <label class="flex items-center">
+                      <input type="radio" name="money_type" value="gold" checked class="ml-2" onchange="updateZakatCalculation()">
+                      <span>ذهب</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input type="radio" name="money_type" value="silver" class="ml-2" onchange="updateZakatCalculation()">
+                      <span>فضة</span>
+                    </label>
+                    <label class="flex items-center">
+                      <input type="radio" name="money_type" value="cash" class="ml-2" onchange="updateZakatCalculation()">
+                      <span>أوراق نقدية</span>
+                    </label>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block mb-2">المقدار المملوك:</label>
+                  <div class="flex items-center">
+                    <input type="number" id="zakatAmount" value="100" class="input-field border border-gray-300 rounded p-2 w-full" placeholder="أدخل المقدار" oninput="updateZakatCalculation()">
+                    <span class="mr-2" id="zakatUnit">جرام</span>
+                  </div>
+                </div>
+                
+                <button class="btn-primary py-2 px-4 rounded w-full mb-4" onclick="calculateZakat()">احسب الزكاة</button>
+                
+                <div class="result-display p-3 rounded" id="zakatResult">
+                  <p class="mb-1"><strong>النصاب:</strong> <span id="nisabValue">85 جرام (للذهب)</span></p>
+                  <p class="mb-1"><strong>المقدار المملوك:</strong> <span id="ownedAmount">100 جرام</span></p>
+                  <p class="mb-1"><strong>هل تجب الزكاة؟</strong> <span id="zakatRequired">نعم</span></p>
+                  <p><strong>مقدار الزكاة الواجبة:</strong> <span id="zakatDue">2.5 جرام</span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Math Model -->
+      <div class="model-content" id="math">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="subtitle text-2xl mb-4">محرك الجذور التربيعية التفاعلي</h2>
+          
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="w-full lg:w-1/2">
+              <p class="text-gray-700 mb-4">يساعد الطلاب على فهم مفهوم الجذور التربيعية من خلال:</p>
+              <ul class="text-gray-700 space-y-2 mb-4">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>حاسبة تفاعلية للجذور التربيعية مع شرح خطوات الحل</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>رسوم بيانية توضح العلاقة بين العدد ومربعه وجذره التربيعي</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>أمثلة متدرجة من البسيط إلى المعقد</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>محاكاة بصرية لمفهوم المربع الكامل باستخدام البلاطات</span>
+                </li>
+              </ul>
+              
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-blue-700 font-bold mb-2">مثال تطبيقي:</h3>
+                <p class="text-gray-700">أوجد الجذر التربيعي للعدد 64.</p>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2">
+              <div class="model-interface p-4">
+                <h3 class="text-center text-xl mb-4">محاكاة المربعات الكاملة</h3>
+                <div class="mb-4 flex justify-center">
+                  <div id="squareGrid" class="grid gap-1" style="grid-template-columns: repeat(8, 1fr);">
+                    <!-- Grid will be generated by JavaScript -->
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block mb-2">أدخل العدد:</label>
+                  <input type="number" id="mathNumber" value="64" min="1" max="144" class="input-field border border-gray-300 rounded p-2 w-full" placeholder="أدخل العدد" oninput="updateSquareRoot()">
+                </div>
+                
+                <button class="btn-primary py-2 px-4 rounded w-full mb-4" onclick="calculateSquareRoot()">احسب الجذر التربيعي</button>
+                
+                <div class="result-display p-3 rounded" id="mathResult">
+                  <p class="mb-1"><strong>العدد الكلي:</strong> <span id="totalSquares">64</span> بلاطة</p>
+                  <p class="mb-1"><strong>عدد البلاطات في كل ضلع:</strong> <span id="sideLength">8</span></p>
+                  <p><strong>الجذر التربيعي لـ <span id="inputNumber">64</span> = <span id="squareRootResult">8</span></strong></p>
+                  <p class="text-sm text-gray-600 mt-2" id="mathExplanation">8 × 8 = 64</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Science Model -->
+      <div class="model-content" id="science">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="subtitle text-2xl mb-4">محرك محاكاة حالات المادة</h2>
+          
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="w-full lg:w-1/2">
+              <p class="text-gray-700 mb-4">يساعد الطلاب على فهم خصائص حالات المادة الثلاث من خلال:</p>
+              <ul class="text-gray-700 space-y-2 mb-4">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>محاكاة بصرية لحركة الجسيمات في الحالات الصلبة والسائلة والغازية</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>أدوات تحكم لتغيير درجة الحرارة والضغط ومراقبة التأثير</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>تجارب افتراضية لتحويل المادة من حالة إلى أخرى</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>شروحات علمية مبسطة للقوى بين الجزيئية</span>
+                </li>
+              </ul>
+              
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-blue-700 font-bold mb-2">مثال تطبيقي:</h3>
+                <p class="text-gray-700">ماذا يحدث لجسيمات الماء عند تسخينها من 0°م إلى 100°م؟</p>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2">
+              <div class="model-interface p-4">
+                <h3 class="text-center text-xl mb-4">محاكاة حالات المادة</h3>
+                <div class="mb-4 flex justify-center">
+                  <div id="particleContainer" class="w-full h-40 bg-blue-100 rounded-lg flex items-center justify-center relative overflow-hidden">
+                    <!-- Particles will be generated by JavaScript -->
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block mb-2">درجة الحرارة: <span id="tempValue">25</span>°م</label>
+                  <input type="range" id="temperatureSlider" min="-50" max="150" value="25" class="w-full" oninput="updateMatterState()">
+                  <div class="flex justify-between text-sm">
+                    <span>-50°م</span>
+                    <span>150°م</span>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block mb-2">الضغط: <span id="pressureValue">1</span> ضغط جوي</label>
+                  <input type="range" id="pressureSlider" min="0.5" max="5" step="0.5" value="1" class="w-full" oninput="updateMatterState()">
+                  <div class="flex justify-between text-sm">
+                    <span>0.5</span>
+                    <span>5</span>
+                  </div>
+                </div>
+                
+                <div class="result-display p-3 rounded" id="scienceResult">
+                  <p class="mb-1"><strong>الحالة الحالية:</strong> <span id="currentState">سائل</span></p>
+                  <p class="mb-1"><strong>خصائص الحالة:</strong></p>
+                  <ul class="list-disc mr-5 text-sm" id="stateProperties">
+                    <li>الجسيمات متقاربة نسبياً</li>
+                    <li>حركة متوسطة السرعة</li>
+                    <li>شكل غير ثابت، حجم ثابت</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Computer Science Model -->
+      <div class="model-content" id="computer">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="subtitle text-2xl mb-4">محرك البرمجة التفاعلي</h2>
+          
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="w-full lg:w-1/2">
+              <p class="text-gray-700 mb-4">يساعد الطلاب على تعلم المعاملات الشرطية والمنطقية في بايثون من خلال:</p>
+              <ul class="text-gray-700 space-y-2 mb-4">
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>محرر أكواد مدمج مع تصحيح فوري للأخطاء</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>شروحات تفاعلية للمعاملات الشرطية (if, elif, else)</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>أمثلة عملية قابلة للتنفيذ والتعديل</span>
+                </li>
+                <li class="flex items-start">
+                  <i class="fas fa-check-circle text-blue-500 mt-1 ml-2"></i>
+                  <span>مساعد ذكي يقدم اقتراحات لحل المشاكل البرمجية</span>
+                </li>
+              </ul>
+              
+              <div class="bg-blue-50 p-4 rounded-lg">
+                <h3 class="text-blue-700 font-bold mb-2">مثال تطبيقي:</h3>
+                <p class="text-gray-700">اكتب برنامج يحدد ما إذا كان العدد موجباً أم سالباً أم صفراً.</p>
+              </div>
+            </div>
+            
+            <div class="w-full lg:w-1/2">
+              <div class="model-interface p-4">
+                <h3 class="text-center text-xl mb-4">محرر بايثون التفاعلي</h3>
+                <div class="mb-4 bg-gray-900 text-white p-3 rounded font-mono text-sm" id="codeEditor">
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">1</div>
+                    <div>number = int(input("أدخل رقم:"))</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">2</div>
+                    <div>if number > 0:</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">3</div>
+                    <div class="mr-4">    print("العدد موجب")</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">4</div>
+                    <div>elif number < 0:</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">5</div>
+                    <div class="mr-4">    print("العدد سالب")</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">6</div>
+                    <div>else:</div>
+                  </div>
+                  <div class="flex">
+                    <div class="text-gray-500 ml-2">7</div>
+                    <div class="mr-4">    print("العدد صفر")</div>
+                  </div>
+                </div>
+                
+                <div class="mb-4">
+                  <label class="block mb-2">أدخل رقم للاختبار:</label>
+                  <input type="number" id="testNumber" value="5" class="input-field border border-gray-300 rounded p-2 w-full" placeholder="أدخل رقم">
+                </div>
+                
+                <div class="flex gap-2 mb-4">
+                  <button class="btn-primary py-1 px-3 rounded flex-1" onclick="runPythonCode()">تشغيل</button>
+                  <button class="bg-gray-500 text-white py-1 px-3 rounded flex-1 hover:bg-gray-600" onclick="resetCode()">إعادة تعيين</button>
+                  <button class="bg-green-500 text-white py-1 px-3 rounded flex-1 hover:bg-green-600" onclick="showHelp()">مساعدة</button>
+                </div>
+                
+                <div class="result-display p-3 rounded" id="codeResult">
+                  <p class="mb-1"><strong>النتيجة:</strong></p>
+                  <div class="bg-black text-green-400 p-2 rounded" id="codeOutput">
+                    <p>أدخل رقم: <span id="inputValue">5</span></p>
+                    <p id="outputMessage">العدد موجب</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Tab switching functionality
+      function showModel(modelId) {
+        // Hide all model contents
+        const contents = document.querySelectorAll('.model-content');
+        contents.forEach(content => {
+          content.classList.remove('active');
+        });
+        
+        // Remove active class from all tabs
+        const tabs = document.querySelectorAll('.model-tab');
+        tabs.forEach(tab => {
+          tab.classList.remove('active');
+        });
+        
+        // Show selected model content
+        document.getElementById(modelId).classList.add('active');
+        
+        // Add active class to clicked tab
+        event.target.closest('.model-tab').classList.add('active');
+      }
+
+      // Zakat Calculator Functions
+      function updateZakatCalculation() {
+        const amount = parseFloat(document.getElementById('zakatAmount').value) || 0;
+        const moneyType = document.querySelector('input[name="money_type"]:checked').value;
+        
+        let nisab, unit;
+        switch(moneyType) {
+          case 'gold':
+            nisab = 85;
+            unit = 'جرام';
+            break;
+          case 'silver':
+            nisab = 595;
+            unit = 'جرام';
+            break;
+          case 'cash':
+            nisab = 4000;
+            unit = 'ريال';
+            break;
+        }
+        
+        document.getElementById('zakatUnit').textContent = unit;
+        document.getElementById('nisabValue').textContent = `${nisab} ${unit} (لل${moneyType === 'gold' ? 'ذهب' : moneyType === 'silver' ? 'فضة' : 'أوراق النقدية'})`;
+        document.getElementById('ownedAmount').textContent = `${amount} ${unit}`;
+        
+        const zakatRequired = amount >= nisab;
+        document.getElementById('zakatRequired').textContent = zakatRequired ? 'نعم' : 'لا';
+        
+        const zakatAmount = zakatRequired ? (amount * 0.025) : 0;
+        document.getElementById('zakatDue').textContent = zakatRequired ? `${zakatAmount.toFixed(2)} ${unit}` : 'لا تجب الزكاة';
+      }
+
+      function calculateZakat() {
+        updateZakatCalculation();
+        const resultDiv = document.getElementById('zakatResult');
+        resultDiv.classList.add('updated');
+        setTimeout(() => resultDiv.classList.remove('updated'), 1000);
+      }
+
+      // Square Root Calculator Functions
+      function updateSquareRoot() {
+        const number = parseInt(document.getElementById('mathNumber').value) || 1;
+        const sqrt = Math.sqrt(number);
+        const isSquare = Number.isInteger(sqrt);
+        
+        document.getElementById('totalSquares').textContent = number;
+        document.getElementById('inputNumber').textContent = number;
+        
+        if (isSquare) {
+          document.getElementById('sideLength').textContent = sqrt;
+          document.getElementById('squareRootResult').textContent = sqrt;
+          document.getElementById('mathExplanation').textContent = `${sqrt} × ${sqrt} = ${number}`;
+          generateSquareGrid(sqrt);
+        } else {
+          const approxSqrt = sqrt.toFixed(2);
+          document.getElementById('sideLength').textContent = `≈ ${approxSqrt}`;
+          document.getElementById('squareRootResult').textContent = approxSqrt;
+          document.getElementById('mathExplanation').textContent = `${approxSqrt} × ${approxSqrt} ≈ ${number}`;
+          generateSquareGrid(Math.ceil(sqrt), number);
+        }
+      }
+
+      function generateSquareGrid(size, totalSquares = null) {
+        const grid = document.getElementById('squareGrid');
+        grid.innerHTML = '';
+        grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+        
+        const total = totalSquares || size * size;
+        
+        for (let i = 0; i < size * size; i++) {
+          const square = document.createElement('div');
+          square.className = 'w-6 h-6 grid-square';
+          square.style.backgroundColor = i < total ? '#3B82F6' : '#E5E7EB';
+          grid.appendChild(square);
+        }
+      }
+
+      function calculateSquareRoot() {
+        updateSquareRoot();
+        const resultDiv = document.getElementById('mathResult');
+        resultDiv.classList.add('updated');
+        setTimeout(() => resultDiv.classList.remove('updated'), 1000);
+      }
+
+      // Matter State Simulation Functions
+      let particles = [];
+      let animationId;
+
+      function createParticles() {
+        const container = document.getElementById('particleContainer');
+        container.innerHTML = '';
+        particles = [];
+        
+        for (let i = 0; i < 15; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle w-3 h-3 bg-blue-600';
+          particle.style.left = Math.random() * (container.offsetWidth - 12) + 'px';
+          particle.style.top = Math.random() * (container.offsetHeight - 12) + 'px';
+          container.appendChild(particle);
+          
+          particles.push({
+            element: particle,
+            x: parseFloat(particle.style.left),
+            y: parseFloat(particle.style.top),
+            vx: (Math.random() - 0.5) * 2,
+            vy: (Math.random() - 0.5) * 2
+          });
+        }
+      }
+
+      function animateParticles(state) {
+        const container = document.getElementById('particleContainer');
+        const containerWidth = container.offsetWidth - 12;
+        const containerHeight = container.offsetHeight - 12;
+        
+        particles.forEach(particle => {
+          let speed = 1;
+          switch(state) {
+            case 'solid':
+              speed = 0.2;
+              break;
+            case 'liquid':
+              speed = 1;
+              break;
+            case 'gas':
+              speed = 3;
+              break;
+          }
+          
+          particle.vx += (Math.random() - 0.5) * 0.1;
+          particle.vy += (Math.random() - 0.5) * 0.1;
+          
+          particle.x += particle.vx * speed;
+          particle.y += particle.vy * speed;
+          
+          if (particle.x <= 0 || particle.x >= containerWidth) {
+            particle.vx *= -1;
+            particle.x = Math.max(0, Math.min(containerWidth, particle.x));
+          }
+          if (particle.y <= 0 || particle.y >= containerHeight) {
+            particle.vy *= -1;
+            particle.y = Math.max(0, Math.min(containerHeight, particle.y));
+          }
+          
+          particle.element.style.left = particle.x + 'px';
+          particle.element.style.top = particle.y + 'px';
+        });
+        
+        animationId = requestAnimationFrame(() => animateParticles(state));
+      }
+
+      function updateMatterState() {
+        const temp = parseInt(document.getElementById('temperatureSlider').value);
+        const pressure = parseFloat(document.getElementById('pressureSlider').value);
+        
+        document.getElementById('tempValue').textContent = temp;
+        document.getElementById('pressureValue').textContent = pressure;
+        
+        let state, stateArabic, properties;
+        
+        if (temp < 0) {
+          state = 'solid';
+          stateArabic = 'صلب';
+          properties = [
+            'الجسيمات متقاربة جداً ومرتبة',
+            'حركة اهتزازية بطيئة',
+            'شكل وحجم ثابتان'
+          ];
+        } else if (temp < 100) {
+          state = 'liquid';
+          stateArabic = 'سائل';
+          properties = [
+            'الجسيمات متقاربة نسبياً',
+            'حركة متوسطة السرعة',
+            'شكل غير ثابت، حجم ثابت'
+          ];
+        } else {
+          state = 'gas';
+          stateArabic = 'غاز';
+          properties = [
+            'الجسيمات متباعدة جداً',
+            'حركة سريعة وعشوائية',
+            'شكل وحجم غير ثابتين'
+          ];
+        }
+        
+        document.getElementById('currentState').textContent = stateArabic;
+        const propertiesList = document.getElementById('stateProperties');
+        propertiesList.innerHTML = properties.map(prop => `<li>${prop}</li>`).join('');
+        
+        if (animationId) {
+          cancelAnimationFrame(animationId);
+        }
+        animateParticles(state);
+        
+        const resultDiv = document.getElementById('scienceResult');
+        resultDiv.classList.add('updated');
+        setTimeout(() => resultDiv.classList.remove('updated'), 1000);
+      }
+
+      // Python Code Runner Functions
+      function runPythonCode() {
+        const testNumber = parseInt(document.getElementById('testNumber').value) || 0;
+        document.getElementById('inputValue').textContent = testNumber;
+        
+        let message;
+        if (testNumber > 0) {
+          message = 'العدد موجب';
+        } else if (testNumber < 0) {
+          message = 'العدد سالب';
+        } else {
+          message = 'العدد صفر';
+        }
+        
+        document.getElementById('outputMessage').textContent = message;
+        
+        const resultDiv = document.getElementById('codeResult');
+        resultDiv.classList.add('updated');
+        setTimeout(() => resultDiv.classList.remove('updated'), 1000);
+      }
+
+      function resetCode() {
+        document.getElementById('testNumber').value = '5';
+        runPythonCode();
+      }
+
+      function showHelp() {
+        alert('هذا المثال يوضح استخدام العبارات الشرطية في بايثون:\n\n' +
+              '- if: للتحقق من شرط معين\n' +
+              '- elif: للتحقق من شرط آخر إذا لم يتحقق الأول\n' +
+              '- else: لتنفيذ كود إذا لم يتحقق أي شرط\n\n' +
+              'جرب أرقام مختلفة لترى كيف يعمل البرنامج!');
+      }
+
+      // Initialize the application
+      document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Zakat calculator
+        updateZakatCalculation();
+        
+        // Initialize Square Root calculator
+        updateSquareRoot();
+        
+        // Initialize Matter State simulation
+        createParticles();
+        updateMatterState();
+        
+        // Initialize Python code runner
+        runPythonCode();
+      });
+    </script>
+  </body>
+</html>
+
